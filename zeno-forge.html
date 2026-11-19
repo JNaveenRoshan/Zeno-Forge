@@ -448,6 +448,7 @@ tr.sel td{background:rgba(124,92,255,.16)}
 #loader div{text-align:center}
 #loader b{display:block;font-size:13px;letter-spacing:.3em;font-weight:800;margin-top:14px}
 #loader span{color:var(--muted);font-size:12px}
+#loader i{display:block;margin-top:8px;color:var(--muted);opacity:.7;font-size:11px;font-style:normal}
 #loader svg{width:64px;height:64px;filter:drop-shadow(0 0 20px #7C5CFF);animation:spin 2.4s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 #panelsBtn{display:none}
@@ -887,7 +888,7 @@ body.light .goalsel{background:#fff}
 <div id="toasts"></div>
 <div id="blabels"></div>
 <div id="hint" class="glass">Drag to pan · Right-drag to rotate · Scroll / pinch to zoom · Click anything</div>
-<div id="loader"><div><svg viewBox="0 0 40 40"><path d="M20 2l15.6 9v18L20 38 4.4 29V11z" fill="none" stroke="#ab98ff" stroke-width="2"/><path d="M13 13h14l-10 14h10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>ZENO FORGE</b><span>Spinning up the campus…</span></div></div>
+<div id="loader"><div><svg viewBox="0 0 40 40"><path d="M20 2l15.6 9v18L20 38 4.4 29V11z" fill="none" stroke="#ab98ff" stroke-width="2"/><path d="M13 13h14l-10 14h10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>ZENO FORGE</b><span>Spinning up the campus…</span><i>A whole 3D world in your browser · first visit takes a few seconds</i></div></div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -4331,10 +4332,16 @@ async function loadKits() {
   const [{ GLTFLoader }, SU, BU] = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/utils/SkeletonUtils.js'), import('three/addons/utils/BufferGeometryUtils.js')]);
   SkelClone = SU.clone; mergeGeos = BU.mergeGeometries; KIT.anim = {};
   const ld = new GLTFLoader();
-  const jobs = Object.entries(KLIST); let next = 0;
-  const worker = async () => { while (next < jobs.length) { const [k, p] = jobs[next++]; const [d, f] = p.split('/');
-    for (let a = 0; a < 4 && !KIT.t[k]; a++) { try { const g = await ld.loadAsync(KDIR[d] + f + '.glb'); KIT.t[k] = g.scene; KIT.anim[k] = g.animations; } catch (e) { await new Promise(r => setTimeout(r, 250 * (a + 1))); } }
-    if (!KIT.t[k]) console.warn('kit model missing', p); } };
+  const jobs = Object.entries(KLIST); let next = 0, done = 0;
+  const note = t => { const el = document.querySelector('#loader span'); if (el) el.textContent = t; };
+  // models/kits.pack = every model below in ONE gzipped file (built by tools/build_site.py): 1 request of ~1.7 MB instead of 123 files / 10 MB
+  let PACK = null;
+  try { note('Downloading the 3D world…'); const r = await fetch('models/kits.pack');
+    if (r.ok && 'DecompressionStream' in window) { const buf = await new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+      const n = new DataView(buf).getUint32(0, true); PACK = { buf, idx: JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 4, n))), base: 4 + n }; } } catch (e) { PACK = null; }
+  const worker = async () => { while (next < jobs.length) { const [k, p] = jobs[next++]; const [d, f] = p.split('/'), at = PACK && PACK.idx[p];
+    for (let a = 0; a < 4 && !KIT.t[k]; a++) { try { const g = at ? await ld.parseAsync(PACK.buf.slice(PACK.base + at[0], PACK.base + at[0] + at[1]), KDIR[d]) : await ld.loadAsync(KDIR[d] + f + '.glb'); KIT.t[k] = g.scene; KIT.anim[k] = g.animations; } catch (e) { await new Promise(r => setTimeout(r, 250 * (a + 1))); } }
+    if (!KIT.t[k]) console.warn('kit model missing', p); done++; note(`Building the 3D world… ${Math.round(done / jobs.length * 100)}%`); } };
   await Promise.all(Array.from({ length: 6 }, worker));
   KIT.ready = true; try { applyKits(); } finally { requestAnimationFrame(() => requestAnimationFrame(hideLoader)); }
 }
