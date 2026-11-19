@@ -1,0 +1,13 @@
+# secrets and local data: never commit
+tools/negotiator/.env
+*.db
+__pycache__/
+
+# build output and large source packs
+site/
+.vercel/
+kenny assests/
+assets/
+
+# rendered promo film frames
+promo/

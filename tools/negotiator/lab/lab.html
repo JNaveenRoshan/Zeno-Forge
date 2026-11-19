@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zeno Bot Lab</title>
+<style>
+:root{--bg:#0f1220;--panel:#171b2e;--panel2:#1d2238;--line:#2a3150;--line2:#3a4370;--text:#e8ebf7;--muted:#9aa2c4;--dim:#6b7398;--violet:#7C5CFF;--violet2:#ab98ff;--green:#3ddc97;--amber:#ffb547;--red:#ff5470;--cyan:#4cc3ff;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 Inter,system-ui,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+header{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}.logo i{width:30px;height:30px;border-radius:9px;background:var(--violet);display:grid;place-items:center;font:800 13px Inter,sans-serif;font-style:normal}
+.logo b{font-size:15px}.logo small{display:block;font-size:11px;color:var(--muted)}
+nav{display:flex;gap:4px;margin-left:12px}nav button{padding:7px 13px;border-radius:9px;border:1px solid transparent;background:none;color:var(--muted);font-weight:600}
+nav button.on{background:rgba(124,92,255,.18);border-color:rgba(124,92,255,.5);color:#fff}
+.hr{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.seg{display:flex;padding:3px;border-radius:9px;background:var(--panel2);border:1px solid var(--line)}.seg button{padding:5px 11px;border:0;border-radius:7px;background:none;color:var(--muted);font-weight:600;font-size:12px}
+.seg button.on{background:var(--violet);color:#fff}
+.inp{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 9px;min-width:0}
+.inp:focus{outline:none;border-color:var(--violet)}
+label.l{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.btn{padding:7px 13px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);font-weight:600;font-size:12.5px}
+.btn:hover{border-color:var(--line2)}.btn.prim{background:var(--violet);border-color:var(--violet);color:#fff}.btn.sm{padding:4px 9px;font-size:11.5px}.btn:disabled{opacity:.45;cursor:default}
+.btn.danger{color:#ff8fa3}
+.status{font-size:11.5px;color:var(--muted)}.status b{color:var(--green)}.status b.no{color:var(--red)}
+main{padding:16px 20px;display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;max-width:1700px;margin:0 auto}
+main.full{grid-template-columns:minmax(0,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+h2{margin:2px 0 8px;font-size:16px}h3{margin:0 0 8px;font-size:13.5px}
+.setbar{display:flex;gap:6px;align-items:center;margin-bottom:10px}.setbar select{flex:1}
+.cases{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.case{display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer}
+.case.on{border-color:var(--violet);box-shadow:inset 0 0 0 1px var(--violet)}
+.case input{margin-top:2px;accent-color:var(--violet)}.case b{display:block;font-size:12.5px}.case small{color:var(--muted);font-size:11px}
+.case .res{margin-left:auto;font:700 11px var(--mono);white-space:nowrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 12px}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}.f span{font-size:10.5px;color:var(--muted);font-weight:600}.f.w2{grid-column:span 2}.f.w4{grid-column:span 4}
+textarea.inp{resize:vertical;min-height:44px}
+table{width:100%;border-collapse:collapse}th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:left;padding:6px;border-bottom:1px solid var(--line)}
+td{padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+td .inp{width:100%}
+.hidden-tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.06em;padding:1px 5px;border-radius:4px;background:rgba(255,84,112,.15);color:#ff8fa3;margin-left:4px;vertical-align:middle}
+.exp{margin-top:12px;padding:10px 12px;border-radius:12px;border:1px dashed rgba(61,220,151,.45);background:rgba(61,220,151,.04)}
+.exp h3{color:var(--green)}
+.sect{margin-top:14px}
+.ok{color:var(--green)}.no{color:var(--red)}.wa{color:var(--amber)}.mut{color:var(--muted)}
+.chk{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;margin-top:6px}
+.res-card{margin-top:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.res-h{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.res-b{padding:12px 14px}
+.grade{min-width:64px;padding:6px 10px;border-radius:10px;background:var(--panel2);text-align:center}.grade b{display:block;font:800 20px var(--mono)}.grade small{font-size:10px;color:var(--muted)}
+.grade.g b{color:var(--green)}.grade.a b{color:var(--amber)}.grade.r b{color:var(--red)}
+.lanes{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px;margin-top:10px}
+.lane{border:1px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;flex-direction:column;max-height:420px}
+.lane h4{margin:0;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px}.lane h4 small{display:block;font-weight:400;color:var(--muted);font-size:10.5px}
+.msgs{padding:8px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.msg{padding:7px 9px;border-radius:10px;font-size:11.5px;max-width:92%}
+.msg.b{background:rgba(124,92,255,.16);align-self:flex-start}.msg.s{background:rgba(255,255,255,.06);align-self:flex-end}.msg.sys{background:rgba(255,181,71,.1);border:1px dashed rgba(255,181,71,.5);align-self:center;max-width:100%}
+.msg .mt{font-size:9.5px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.05em}.msg .mp{font:700 13px var(--mono)}
+.msg.accept{outline:1px solid rgba(61,220,151,.6)}.msg.drop{outline:1px solid rgba(255,84,112,.5)}
+.stars{display:flex;gap:2px}.stars button{border:0;background:none;font-size:18px;color:var(--line2);padding:0 1px}.stars button.on{color:var(--amber)}
+.note{width:100%;margin-top:6px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+.q{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel2);font-size:11.5px}.q b.p{display:block;font:800 17px var(--mono);margin:4px 0}
+.q ol,.q ul{margin:4px 0;padding-left:16px;color:var(--muted)}
+.doc{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel2);font-size:12px}
+.doc .g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}.doc .g4>div{padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.04)}
+.wbar{display:flex;gap:3px;height:20px;margin-top:6px}.wbar span{display:flex;align-items:center;justify-content:center;border-radius:5px;font:700 10px Inter,sans-serif;color:#fff;overflow:hidden;white-space:nowrap}
+.sb td,.sb th{white-space:nowrap}.sb tr.click{cursor:pointer}.sb tr.click:hover td{background:rgba(124,92,255,.07)}
+.mx td.c{text-align:center;font:700 11px var(--mono)}.mx td.c span{display:inline-block;min-width:44px;padding:3px 6px;border-radius:6px}
+.p100{background:rgba(61,220,151,.18);color:var(--green)}.pmid{background:rgba(255,181,71,.18);color:var(--amber)}.p0{background:rgba(255,84,112,.18);color:var(--red)}
+.guide{max-width:920px;margin:0 auto}.guide h2{margin-top:22px}.guide p,.guide li{color:#cfd4ee;line-height:1.6}.guide code{font-family:var(--mono);background:var(--panel2);padding:1px 5px;border-radius:5px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);padding:9px 16px;border-radius:10px;background:var(--panel2);border:1px solid var(--line2);font-size:12.5px;z-index:20;display:none}
+.spin{display:inline-block;width:11px;height:11px;margin-right:6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-1px}@keyframes sp{to{transform:rotate(360deg)}}
+svg.ch{width:100%;height:170px;margin-top:8px;background:var(--panel2);border-radius:12px;border:1px solid var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--muted);margin-top:4px}.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+@media(max-width:900px){main{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lanes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><i>Z</i><div><b>Zeno Bot Lab</b><small>Test the AI bots on your own golden cases</small></div></div>
+  <nav id="nav"></nav>
+  <div class="hr">
+    <span class="status" id="status">checking server…</span>
+    <div class="seg" id="mode"><button data-mode="mock">Mock (free)</button><button data-mode="sarvam">Sarvam AI</button></div>
+    <label class="l">Label <input class="inp" id="label" style="width:110px" title="Name this run, e.g. the prompt version you are testing"></label>
+  </div>
+</header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+<script>
+const $ = s => document.querySelector(s), esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const eur = v => v == null || isNaN(v) ? '—' : '€' + Math.round(v).toLocaleString('en-US');
+const S = { tab: 'negotiation', mode: 'mock', label: 'v2', rounds: 5, sets: [], setId: {}, sel: {}, edit: {}, run: null, results: [], openRes: null, health: {} };
+try { Object.assign(S, JSON.parse(localStorage.getItem('zenoLab') || '{}'), { run: null, sets: [], results: [] }); } catch (e) {}
+const persist = () => { try { localStorage.setItem('zenoLab', JSON.stringify({ tab: S.tab, mode: S.mode, label: S.label, rounds: S.rounds, setId: S.setId, sel: S.sel, edit: S.edit })); } catch (e) {} };
+const BOTS = { negotiation: 'Negotiation', rfq: 'RFQ', evaluator: 'Evaluator' };
+const TABS = { ...BOTS, scoreboard: 'Scoreboard', guide: 'How to evaluate' };
+const toast = (t, c) => { const e = $('#toast'); e.innerHTML = t; e.style.borderColor = c || 'var(--line2)'; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 3800); };
+const api = async (p, body) => { const r = await fetch(p, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' }); return r.json(); };
+
+// ---------------- data helpers ----------------
+const setsOf = bot => S.sets.filter(s => s.bot === bot);
+const curSet = bot => setsOf(bot).find(s => s.id === S.setId[bot]) || setsOf(bot)[0];
+const casesOf = bot => (curSet(bot) || { data: { cases: [] } }).data.cases;
+const selKeys = bot => { const ks = casesOf(bot).map(c => c.key); if (!S.sel[bot]) S.sel[bot] = ks; return S.sel[bot].filter(k => ks.includes(k)); };
+const curCase = bot => casesOf(bot).find(c => c.key === S.edit[bot]) || casesOf(bot)[0];
+const relText = s => s.rel_score == null || s.rel_score === '' ? 'new, no history' : `${s.rel_score} (${s.rel_score >= 80 ? 'strong' : s.rel_score >= 70 ? 'good' : 'medium'})`;
+const num = v => v === '' || v == null ? null : +v;
+
+// evaluator: same scoring and 30-day impact maths as the Forge app (Sundays approximated as every 7th day)
+function evalLine(c) {
+  const w = c.weights, qs = c.quotes_in, minP = Math.min(...qs.map(x => +x.price)), minL = Math.min(...qs.map(x => +x.lead)), E = +c.contract_end_day, daily = Math.round(c.vol / 310), carPrice = +c.car_price || 40000;
+  const rows = qs.map(x => { const cov = Math.min(100, +x.covers || 100), relN = parseInt(x.rel) || 0;
+    const s_price = Math.round(100 * minP / x.price), s_esg = +x.esg, s_lead = Math.round(100 * minL / x.lead);
+    const s_risk = Math.max(0, Math.round(({ Low: 90, Medium: 65, High: 35 }[x.risk] || 60) - (100 - cov) * .4 + (x.new ? -5 : relN >= 75 ? 5 : 0)));
+    const total = +((s_price * w.price + s_esg * w.esg + s_lead * w.lead + s_risk * w.risk) / 100).toFixed(1);
+    const start = x.incumbent ? 0 : Math.round(x.lead * 1.2) + (x.new ? 10 : 4), gap = x.incumbent ? 0 : Math.max(0, start - E);
+    let gapCars = 0, shortCars = 0; for (let k = E; k < 30; k++) { if (k % 7 === 6) continue; if (k < start) gapCars += daily; else if (cov < 100) shortCars += Math.round(daily * (1 - cov / 100)); }
+    const cars = gapCars + shortCars;
+    return { supplier: x.supplier, incumbent: !!x.incumbent, new: !!x.new, rel: x.rel || null, price: +x.price, lead: +x.lead, covers: cov, capacity: Math.round(c.vol / 48 * cov / 100), esg: +x.esg, risk: x.risk,
+      s_price, s_esg, s_lead, s_risk, total, start_day: start, gap_days: gap, short_cars: shortCars, gap_cars: gapCars, cars_at_risk: cars, eur_at_risk: cars * carPrice, margin_at_risk: Math.round(cars * carPrice * .12),
+      conditions: typeof x.conditions === 'string' ? x.conditions.split(';').map(t => t.trim()).filter(Boolean) : (x.conditions || []), esg_commitment: null, saving_year: Math.round((c.now - x.price) * c.vol) }; });
+  rows.sort((a, b) => b.total - a.total).forEach((r, i) => r.rank = i + 1);
+  return { key: c.key, part: c.part, model: c.model, vol: +c.vol, daily, need_week: Math.round(c.vol / 48), now: +c.now, incumbent: c.incumbent, contract_end_day: E, goal_name: c.goal_name, weights: w, quotes: rows };
+}
+function buildLine(bot, c) {
+  const base = { key: c.key, part: c.part, model: c.model, spec: c.spec || c.part, category: c.category || 'Part', vol: +c.vol, plant: c.plant || 'Zeno Plant', now: +c.now };
+  if (bot === 'negotiation') return { ...base, budget: +c.budget, target: +c.target, fixed_target: true,
+    suppliers: c.suppliers.map(s => ({ n: s.n, quote: +s.quote, floor: num(s.floor), eager: num(s.eager), esg: +s.esg, lead: +s.lead, risk: s.risk, rel: relText(s), rel_score: num(s.rel_score) })) };
+  if (bot === 'rfq') return { ...base, incumbent: c.incumbent, goal: c.goal,
+    suppliers: c.suppliers.map(s => ({ n: s.n, quote: +s.quote, cap: num(s.cap), esg: +s.esg, lead: +s.lead, risk: s.risk, rel: relText(s), rel_score: num(s.rel_score) })) };
+  return evalLine(c);
+}
+
+// ---------------- golden checks: what YOU said a good bot must do ----------------
+const GOALKEY = { cost: 'price', esg: 'esg', lead: 'lead', risk: 'risk' };
+function golden(bot, c, R) {
+  const e = c.expect || {}, out = [], add = (name, pass, why) => out.push({ name, pass: !!pass, why });
+  if (bot === 'negotiation') { const s = R.score; if (!s) return out;
+    if (e.deal === 'yes') add('Reaches a deal', s.deal); if (e.deal === 'no') add('Does not do a deal (over budget)', !s.deal);
+    if (s.deal && e.max_price) add(`Deal price ≤ ${eur(e.max_price)}`, s.best_price <= e.max_price, eur(s.best_price));
+    if (e.deal === 'yes' && e.min_saving_pct) add(`Saving ≥ ${e.min_saving_pct}%`, s.saving_pct >= e.min_saving_pct, s.saving_pct + '%');
+    if (e.winner) add(`Winner is ${e.winner}`, s.best_supplier === e.winner, s.best_supplier || 'none');
+    if (e.winner_not) add(`Never closes with ${e.winner_not}`, !(s.suppliers || []).some(r => r.supplier === e.winner_not && r.status === 'deal'));
+    add('Never pays above the budget', !s.deal || s.best_price <= c.budget);
+    add('No supplier went below its hidden floor', (s.suppliers || []).every(r => !r.final || r.final >= r.floor - 1)); }
+  if (bot === 'rfq') { const qs = R.quotes || {}, doc = R.doc; if (!doc) return out;
+    const top = Object.entries(doc.weights).sort((a, b) => b[1] - a[1])[0][0];
+    add(`Goal (${c.goal}) has the highest weight`, top === GOALKEY[c.goal], top + ' ' + doc.weights[top] + '%');
+    (e.must_quote || []).forEach(n => add(`${n} quotes`, qs[n] && qs[n].decision === 'quote', qs[n] ? qs[n].decision : 'no reply'));
+    Object.values(qs).filter(q => q.decision === 'decline').forEach(q => add(`${q.supplier} was allowed to decline`, (e.may_decline || []).includes(q.supplier)));
+    if (e.min_quotes) add(`At least ${e.min_quotes} quotes`, Object.values(qs).filter(q => q.decision === 'quote').length >= e.min_quotes);
+    add('No prices in the RFQ', !/(EUR|€)\s?\d/.test(JSON.stringify([doc.summary, doc.scope, doc.quality, doc.delivery, doc.commercial, doc.esg])));
+    Object.values(qs).filter(q => q.decision === 'quote').forEach(q => { const s = c.suppliers.find(x => x.n === q.supplier); if (s && s.cap) add(`${q.supplier} capacity ≤ real plant (${(+s.cap).toLocaleString()}/wk)`, q.capacity_per_week <= +s.cap, q.capacity_per_week); }); }
+  if (bot === 'evaluator') { const v = R.eval; if (!v) return out;
+    if ((e.first_pick_in || []).length) add(`First pick is ${e.first_pick_in.join(' or ')}`, e.first_pick_in.includes(v.first_pick), v.first_pick);
+    (e.must_shortlist || []).forEach(n => add(`${n} is on the shortlist`, v.shortlist.includes(n)));
+    (e.must_not_first || []).forEach(n => add(`${n} is not the first pick`, v.first_pick !== n)); }
+  return out;
+}
+const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+const gcls = v => v >= 75 ? 'g' : v >= 50 ? 'a' : 'r';
+
+// ---------------- running ----------------
+async function runBot(bot) {
+  const ks = selKeys(bot), cases = casesOf(bot).filter(c => ks.includes(c.key));
+  if (!cases.length) return toast('Tick at least one case');
+  const set = curSet(bot);
+  let res; try { res = await api('/api/lab/run', { bot, mode: S.mode, label: S.label, rounds: S.rounds, cases: cases.map(c => buildLine(bot, c)) }); } catch (e) { return toast('Lab server not reachable', 'var(--red)'); }
+  if (res.error) return toast(res.error, 'var(--red)');
+  S.run = { id: res.id, bot, setId: set.id, setName: set.name, mode: res.mode, label: S.label, started: Date.now() / 1000, live: true, cost: 0, cases: Object.fromEntries(cases.map(c => [c.key, { c, ev: [], quotes: {}, doc: null, score: null, eval: null, done: false, human: { stars: 0, note: '' } }])) };
+  render();
+  const es = new EventSource(`/api/${res.stream}/${res.id}/events`); let t = null; const rer = () => { if (t) return; t = setTimeout(() => { t = null; render(); }, 200); };
+  es.onmessage = m => { const e = JSON.parse(m.data), R = S.run && S.run.cases[e.key];
+    if (e.type === 'run_done') { es.close(); S.run.live = false; S.run.cost = e.cost || 0; finishRun(); toast(e.msg, e.status === 'done' ? 'var(--green)' : 'var(--amber)'); render(); return; }
+    if (!R) { if (e.type === 'status' && e.msg) toast(e.msg, 'var(--amber)'); return; }
+    R.ev.push(e);
+    if (e.type === 'rfq_doc') R.doc = e.doc;
+    if (e.type === 'quote' || e.type === 'decline') R.quotes[e.from] = e.quote;
+    if (e.type === 'part_done') { R.done = true; R.score = e.score; if (e.eval) R.eval = e.eval; R.golden = golden(bot, R.c, R); }
+    rer(); };
+  es.onerror = () => { if (!S.run || !S.run.live) es.close(); };
+}
+function resultOf(run) {
+  const cases = Object.values(run.cases).map(R => ({ key: R.c.key, name: R.c.name, auto_grade: R.score ? R.score.grade : null, golden: R.golden || [], golden_pass: (R.golden || []).filter(g => g.pass).length, golden_total: (R.golden || []).length,
+    human: R.human, out: run.bot === 'negotiation' && R.score ? { deal: R.score.deal, price: R.score.best_price, winner: R.score.best_supplier, saving: R.score.saving_pct, rounds: R.score.rounds_used }
+      : run.bot === 'evaluator' && R.eval ? { first_pick: R.eval.first_pick, shortlist: R.eval.shortlist } : run.bot === 'rfq' ? { quotes: Object.values(R.quotes).map(q => `${q.supplier}: ${q.decision === 'quote' ? eur(q.price) : 'declined'}`) } : {} }));
+  const gp = cases.reduce((a, c) => a + c.golden_pass, 0), gt = cases.reduce((a, c) => a + c.golden_total, 0), au = cases.filter(c => c.auto_grade != null), hu = cases.filter(c => c.human && c.human.stars);
+  return { id: run.id, bot: run.bot, set_id: run.setId, set_name: run.setName, label: run.label, mode: run.mode, started: run.started, cost: run.cost, cases,
+    summary: { golden_pct: pct(gp, gt), golden_pass: gp, golden_total: gt, auto_grade: au.length ? Math.round(au.reduce((a, c) => a + c.auto_grade, 0) / au.length) : null, human_avg: hu.length ? +(hu.reduce((a, c) => a + c.human.stars, 0) / hu.length).toFixed(1) : null, cases_passed: cases.filter(c => c.golden_total && c.golden_pass === c.golden_total).length } };
+}
+async function finishRun() { const r = resultOf(S.run); await api('/api/lab/results', r); S.results = await api('/api/lab/results'); }
+async function saveRatings() { if (!S.run || S.run.live) return; await api('/api/lab/results', resultOf(S.run)); S.results = await api('/api/lab/results'); toast('Your rating is saved', 'var(--green)'); }
+
+// ---------------- views ----------------
+function nav() { $('#nav').innerHTML = Object.entries(TABS).map(([k, l]) => `<button class="${S.tab === k ? 'on' : ''}" data-tab="${k}">${l}</button>`).join('');
+  document.querySelectorAll('#mode button').forEach(b => b.classList.toggle('on', b.dataset.mode === S.mode)); $('#label').value = S.label; }
+
+function leftHTML(bot) {
+  const set = curSet(bot), ks = selKeys(bot), last = S.run && S.run.bot === bot ? S.run : null;
+  return `<div class="card"><div class="eyebrow">Golden dataset</div>
+    <div class="setbar"><select class="inp" data-setsel="${bot}">${setsOf(bot).map(s => `<option value="${s.id}" ${set && s.id === set.id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="row"><button class="btn sm" data-act="saveset">💾 Save</button><button class="btn sm" data-act="copyset">Copy as new set</button><button class="btn sm" data-act="export">Export</button><label class="btn sm">Import<input type="file" accept=".json" data-import="${bot}" hidden></label></div>
+    <div class="cases">${casesOf(bot).map(c => { const R = last && last.cases[c.key], g = R && R.golden;
+      return `<div class="case ${S.edit[bot] === c.key || (!S.edit[bot] && c === casesOf(bot)[0]) ? 'on' : ''}" data-case="${c.key}"><input type="checkbox" data-tick="${c.key}" ${ks.includes(c.key) ? 'checked' : ''}><div><b>${esc(c.key)} · ${esc(c.name)}</b><small>${esc((c.note || '').slice(0, 80))}${(c.note || '').length > 80 ? '…' : ''}</small></div>
+        <span class="res">${R ? (R.done ? `<span class="${g.every(x => x.pass) ? 'ok' : 'no'}">${g.filter(x => x.pass).length}/${g.length}</span>` : '<span class="spin"></span>') : ''}</span></div>`; }).join('')}</div>
+    <div class="row" style="margin-top:8px"><button class="btn sm" data-act="addcase">+ New case</button><button class="btn sm" data-act="dupcase">Duplicate</button><button class="btn sm danger" data-act="delcase">Delete</button></div>
+    <div class="sect"><div class="row">${bot === 'negotiation' ? `<label class="l">Rounds <input class="inp" type="number" min="2" max="8" value="${S.rounds}" data-rounds style="width:56px"></label>` : ''}
+      <button class="btn prim" data-act="run" ${S.run && S.run.live ? 'disabled' : ''} style="flex:1">${S.run && S.run.live ? '<span class="spin"></span>Running…' : `▶ Run ${ks.length} case${ks.length === 1 ? '' : 's'} · ${S.mode === 'sarvam' ? 'Sarvam' : 'mock'}`}</button></div>
+      <p class="mut" style="font-size:11px;margin:8px 0 0">The bots only see their own side. You see everything here, including the hidden limits marked <span class="hidden-tag">HIDDEN</span>.</p></div></div>`;
+}
+const F = (k, label, v, cls = '', type = 'text', extra = '') => `<label class="f ${cls}"><span>${label}</span>${type === 'area' ? `<textarea class="inp" data-f="${k}">${esc(v)}</textarea>` : type === 'select' ? `<select class="inp" data-f="${k}">${extra}</select>` : `<input class="inp" type="${type}" data-f="${k}" value="${esc(v)}">`}</label>`;
+const opts = (list, v) => list.map(([k, l]) => `<option value="${k}" ${String(v) === String(k) ? 'selected' : ''}>${l}</option>`).join('');
+function editorHTML(bot) {
+  const c = curCase(bot); if (!c) return `<div class="card">No cases. Press <b>+ New case</b>.</div>`;
+  const e = c.expect || (c.expect = {});
+  let h = `<div class="card"><div class="eyebrow">Case ${esc(c.key)} · edit inputs and expectations, then 💾 Save</div><div class="grid" style="margin-top:8px">
+    ${F('name', 'Case name', c.name, 'w2')}${F('part', 'Part', c.part)}${F('model', 'Car model', c.model)}${F('note', 'What this case tests', c.note, 'w4', 'area')}
+    ${F('vol', 'Cars per year', c.vol, '', 'number')}${F('now', 'Price paid today (€/car)', c.now, '', 'number')}`;
+  if (bot === 'negotiation') h += `${F('budget', 'Budget (buyer, hidden) €', c.budget, '', 'number')}${F('target', 'Target (buyer, hidden) €', c.target, '', 'number')}</div>
+    <div class="sect"><h3>Suppliers <span class="mut" style="font-weight:400">· each supplier bot sees only its own row</span></h3><table><thead><tr><th>Name</th><th>List quote €</th><th>Floor € <span class="hidden-tag">HIDDEN</span></th><th>Eagerness 0-1 <span class="hidden-tag">HIDDEN</span></th><th>ESG</th><th>Lead d</th><th>Risk</th><th>Relationship (blank = new)</th><th></th></tr></thead><tbody>
+    ${c.suppliers.map((s, i) => `<tr><td><input class="inp" data-s="${i}|n" value="${esc(s.n)}"></td><td><input class="inp" type="number" data-s="${i}|quote" value="${s.quote}"></td><td><input class="inp" type="number" data-s="${i}|floor" value="${s.floor ?? ''}" placeholder="random"></td><td><input class="inp" type="number" step="0.05" min="0" max="1" data-s="${i}|eager" value="${s.eager ?? ''}" placeholder="random"></td>
+      <td><input class="inp" type="number" data-s="${i}|esg" value="${s.esg}"></td><td><input class="inp" type="number" data-s="${i}|lead" value="${s.lead}"></td><td><select class="inp" data-s="${i}|risk">${opts([['Low', 'Low'], ['Medium', 'Medium'], ['High', 'High']], s.risk)}</select></td><td><input class="inp" type="number" data-s="${i}|rel_score" value="${s.rel_score ?? ''}" placeholder="new"></td><td><button class="btn sm danger" data-rmsup="${i}">×</button></td></tr>`).join('')}</tbody></table>
+    <button class="btn sm" data-act="addsup" style="margin-top:6px">+ Supplier</button></div>
+    <div class="exp"><h3>What a good bot must do (golden expectations)</h3><div class="grid">
+      ${F('expect.deal', 'Deal expected?', '', '', 'select', opts([['yes', 'Yes, a deal'], ['no', 'No deal (impossible)'], ['any', "Don't check"]], e.deal || 'any'))}${F('expect.max_price', 'Deal price at most €', e.max_price ?? '', '', 'number')}${F('expect.min_saving_pct', 'Saving vs today at least %', e.min_saving_pct ?? '', '', 'number')}
+      ${F('expect.winner', 'Winner must be (optional)', e.winner || '')}${F('expect.winner_not', 'Must never close with (optional)', e.winner_not || '', 'w2')}</div><p class="mut" style="font-size:11px;margin:6px 0 0">Always checked too: never pays above the budget · no supplier goes below its floor.</p></div>`;
+  if (bot === 'rfq') h += `${F('incumbent', 'Current supplier', c.incumbent)}${F('goal', 'Goal', '', '', 'select', opts([['cost', 'Cheaper'], ['esg', 'Greener'], ['lead', 'Faster'], ['risk', 'Safer']], c.goal))}</div>
+    <div class="sect"><h3>Invited suppliers <span class="mut" style="font-weight:400">· need ≈ ${Math.round(c.vol / 48).toLocaleString()} sets/week</span></h3><table><thead><tr><th>Name</th><th>List price €</th><th>Real capacity / week <span class="hidden-tag">HIDDEN</span></th><th>Covers</th><th>ESG</th><th>Lead d</th><th>Risk</th><th>Relationship (blank = new)</th><th></th></tr></thead><tbody>
+    ${c.suppliers.map((s, i) => `<tr><td><input class="inp" data-s="${i}|n" value="${esc(s.n)}"></td><td><input class="inp" type="number" data-s="${i}|quote" value="${s.quote}"></td><td><input class="inp" type="number" data-s="${i}|cap" value="${s.cap ?? ''}" placeholder="random"></td><td class="mut">${s.cap ? Math.round(s.cap / (c.vol / 48) * 100) + '%' : '—'}</td>
+      <td><input class="inp" type="number" data-s="${i}|esg" value="${s.esg}"></td><td><input class="inp" type="number" data-s="${i}|lead" value="${s.lead}"></td><td><select class="inp" data-s="${i}|risk">${opts([['Low', 'Low'], ['Medium', 'Medium'], ['High', 'High']], s.risk)}</select></td><td><input class="inp" type="number" data-s="${i}|rel_score" value="${s.rel_score ?? ''}" placeholder="new"></td><td><button class="btn sm danger" data-rmsup="${i}">×</button></td></tr>`).join('')}</tbody></table>
+    <button class="btn sm" data-act="addsup" style="margin-top:6px">+ Supplier</button></div>
+    <div class="exp"><h3>What a good bot must do</h3><div class="grid">${F('expect.must_quote', 'Must quote (comma separated)', (e.must_quote || []).join(', '), 'w2')}${F('expect.may_decline', 'Allowed to decline', (e.may_decline || []).join(', '))}${F('expect.min_quotes', 'At least N quotes', e.min_quotes ?? '', '', 'number')}</div>
+      <p class="mut" style="font-size:11px;margin:6px 0 0">Always checked too: the goal gets the highest weight · no prices in the RFQ · quoted capacity ≤ real capacity. Rule of the bots: a supplier covering less than 50% may decline.</p></div>`;
+  if (bot === 'evaluator') { const L = evalLine(c), w = c.weights;
+    h += `${F('incumbent', 'Current supplier', c.incumbent)}${F('contract_end_day', 'Contract ends in (days)', c.contract_end_day, '', 'number')}${F('goal_name', 'Goal', '', '', 'select', opts([['Cheaper', 'Cheaper'], ['Greener', 'Greener'], ['Faster', 'Faster'], ['Safer', 'Safer']], c.goal_name))}
+      ${F('weights.price', 'Weight price %', w.price, '', 'number')}${F('weights.esg', 'Weight ESG %', w.esg, '', 'number')}${F('weights.lead', 'Weight lead %', w.lead, '', 'number')}${F('weights.risk', 'Weight risk %', w.risk, '', 'number')}</div>
+    <div class="sect"><h3>Quotes the bot must judge</h3><table><thead><tr><th>Supplier</th><th>Price €</th><th>Lead d</th><th>Capacity %</th><th>ESG</th><th>Risk</th><th>New</th><th>Current</th><th>Relationship</th><th>Conditions (; separated)</th><th></th></tr></thead><tbody>
+    ${c.quotes_in.map((s, i) => `<tr><td><input class="inp" data-q="${i}|supplier" value="${esc(s.supplier)}"></td><td><input class="inp" type="number" data-q="${i}|price" value="${s.price}"></td><td><input class="inp" type="number" data-q="${i}|lead" value="${s.lead}"></td><td><input class="inp" type="number" data-q="${i}|covers" value="${s.covers}"></td><td><input class="inp" type="number" data-q="${i}|esg" value="${s.esg}"></td>
+      <td><select class="inp" data-q="${i}|risk">${opts([['Low', 'Low'], ['Medium', 'Medium'], ['High', 'High']], s.risk)}</select></td><td><input type="checkbox" data-q="${i}|new" ${s.new ? 'checked' : ''}></td><td><input type="checkbox" data-q="${i}|incumbent" ${s.incumbent ? 'checked' : ''}></td><td><input class="inp" data-q="${i}|rel" value="${esc(s.rel || '')}" placeholder="e.g. 78 good"></td><td><input class="inp" data-q="${i}|conditions" value="${esc(Array.isArray(s.conditions) ? s.conditions.join('; ') : s.conditions || '')}"></td><td><button class="btn sm danger" data-rmq="${i}">×</button></td></tr>`).join('')}</tbody></table>
+    <button class="btn sm" data-act="addq" style="margin-top:6px">+ Quote</button>
+    <h3 style="margin-top:12px">What the code calculates before the bot sees it</h3><table><thead><tr><th>#</th><th>Supplier</th><th>Score</th><th>Price / ESG / Lead / Risk</th><th>1st delivery</th><th>Gap days</th><th>Cars at risk (30 d)</th></tr></thead><tbody>
+      ${L.quotes.map(r => `<tr><td>${r.rank}</td><td>${esc(r.supplier)}</td><td><b>${r.total}</b></td><td class="mut">${r.s_price} / ${r.s_esg} / ${r.s_lead} / ${r.s_risk}</td><td>${r.incumbent ? 'now' : 'day ' + r.start_day}</td><td>${r.gap_days}</td><td class="${r.cars_at_risk ? 'no' : 'ok'}">${r.cars_at_risk.toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
+    <div class="exp"><h3>What a good bot must do</h3><div class="grid">${F('expect.first_pick_in', 'First pick must be one of', (e.first_pick_in || []).join(', '), 'w2')}${F('expect.must_shortlist', 'Must be on the shortlist', (e.must_shortlist || []).join(', '))}${F('expect.must_not_first', 'Must NOT be first pick', (e.must_not_first || []).join(', '))}</div></div>`; }
+  return h + `</div>`;
+}
+function chartSVG(R) {
+  const c = R.c, offers = R.ev.filter(e => e.type === 'offer' || e.type === 'counter' || e.type === 'accept'), sups = c.suppliers.map(s => s.n), cols = ['#7C5CFF', '#4cc3ff', '#3ddc97', '#ffb547', '#ff7a92'];
+  const vals = offers.map(e => e.price).concat([c.budget, c.target], c.suppliers.map(s => +s.floor || 0).filter(Boolean)), lo = Math.min(...vals) * .98, hi = Math.max(...vals) * 1.02, rounds = Math.max(2, ...R.ev.map(e => e.round || 0));
+  const X = r => 40 + (r - 1) / Math.max(1, rounds - 1) * 620, Y = v => 150 - (v - lo) / (hi - lo || 1) * 130, line = (v, col, lab) => `<line x1="40" x2="660" y1="${Y(v)}" y2="${Y(v)}" stroke="${col}" stroke-dasharray="4 4" stroke-width="1.2"/><text x="664" y="${Y(v) + 3}" fill="${col}" font-size="9">${lab}</text>`;
+  let g = line(c.budget, '#ff7a92', 'budget') + line(c.target, '#3ddc97', 'target');
+  sups.forEach((n, i) => { const s = c.suppliers[i], col = cols[i % 5];
+    if (s.floor) g += `<line x1="40" x2="660" y1="${Y(s.floor)}" y2="${Y(s.floor)}" stroke="${col}" stroke-dasharray="1 4" stroke-width="1.4"/><text x="44" y="${Y(s.floor) - 3}" fill="${col}" font-size="9">${esc(n.split(' ')[0])} floor</text>`;
+    const pts = offers.filter(e => e.from === n).map(e => [X(e.round), Y(e.price)]), cps = offers.filter(e => e.from === 'Buyer' && e.to === n).map(e => [X(e.round), Y(e.price)]);
+    if (pts.length) g += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="2"/>` + pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${col}"/>`).join('');
+    if (cps.length) g += `<polyline points="${cps.map(p => p.join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="1.4" stroke-dasharray="5 3" opacity=".8"/>`; });
+  for (let r = 1; r <= rounds; r++) g += `<text x="${X(r)}" y="166" fill="#6b7398" font-size="9" text-anchor="middle">R${r}</text>`;
+  return `<svg class="ch" viewBox="0 0 700 170">${g}</svg><div class="legend">${sups.map((n, i) => `<span><i style="background:${cols[i % 5]}"></i>${esc(n)} offers · dashed = buyer counters · dotted = hidden floor</span>`).join('')}</div>`;
+}
+function caseResultHTML(bot, R) {
+  const g = R.golden || [], s = R.score, gp = g.filter(x => x.pass).length;
+  let h = `<div class="res-card"><div class="res-h"><div class="grade ${R.done ? gcls(pct(gp, g.length)) : ''}"><b>${R.done ? `${gp}/${g.length}` : '…'}</b><small>your checks</small></div><div class="grade ${s ? gcls(s.grade) : ''}"><b>${s ? s.grade : '…'}</b><small>auto grade</small></div>
+    <div style="flex:1;min-width:200px"><b>${esc(R.c.key)} · ${esc(R.c.name)}</b><div class="mut" style="font-size:11.5px">${esc(R.c.note || '')}</div></div>
+    <div><div class="eyebrow">Your rating</div><div class="stars">${[1, 2, 3, 4, 5].map(n => `<button class="${R.human.stars >= n ? 'on' : ''}" data-star="${R.c.key}|${n}" ${R.done && !S.run.live ? '' : 'disabled'}>★</button>`).join('')}</div></div></div><div class="res-b">`;
+  if (!R.done) h += `<div class="mut"><span class="spin"></span>${bot === 'negotiation' ? 'Negotiating…' : bot === 'rfq' ? 'Writing the RFQ and quotes…' : 'Evaluating…'}</div>`;
+  if (g.length) h += `<div class="chk">${g.map(x => `<span class="${x.pass ? 'ok' : 'no'}">${x.pass ? '✓' : '✕'} ${esc(x.name)}${x.why != null ? ` <span class="mut">(${esc(x.why)})</span>` : ''}</span>`).join('')}</div>`;
+  if (s && s.checks) h += `<div class="chk mut">Auto: ${s.checks.map(x => `<span class="${x.pass ? '' : 'no'}">${x.pass ? '✓' : '✕'} ${esc(x.name)}</span>`).join('')}</div>`;
+  if (bot === 'negotiation') { const sups = R.c.suppliers.map(x => x.n);
+    if (R.ev.length) h += chartSVG(R);
+    h += `<div class="lanes" style="--n:${sups.length}">${sups.map(n => { const ms = R.ev.filter(e => e.from === n || e.to === n || (e.type === 'rejected' && (e.to === n || e.from === n))), sc = s && (s.suppliers || []).find(r => r.supplier === n);
+      return `<div class="lane"><h4>${esc(n)}<small>${sc ? `${sc.status} · ${eur(sc.opening)} → ${eur(sc.final)} · floor ${eur(sc.floor)}` : 'live'}</small></h4><div class="msgs">${ms.map(e => `<div class="msg ${e.type === 'rejected' ? 'sys' : e.from === 'Buyer' ? 'b' : 's'} ${e.type}"><div class="mt">${e.type === 'rejected' ? '⛔ rule check' : e.from === 'Buyer' ? 'Buyer bot' : 'Supplier bot'} · R${e.round ?? ''} · ${e.type}${e.fallback ? ' · fallback' : ''}${e.redacted ? ' · number withheld' : ''}</div>${e.price ? `<div class="mp">${eur(e.price)}</div>` : ''}<div>${esc(e.msg)}</div></div>`).join('')}</div></div>`; }).join('')}</div>`; }
+  if (bot === 'rfq') { const d = R.doc;
+    if (d) h += `<div class="doc" style="margin-top:10px"><div class="eyebrow">${esc(d.ref)} · buyer bot</div><p style="margin:6px 0">${esc(d.summary)}</p><ul style="margin:0;padding-left:18px;color:var(--muted)">${d.scope.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <div class="g4"><div><b>Quality</b><br>${esc(d.quality)}</div><div><b>Delivery</b><br>${esc(d.delivery)}</div><div><b>Commercial</b><br>${esc(d.commercial)}</div><div><b>ESG</b><br>${esc(d.esg)}</div></div>
+      <div class="wbar">${['price', 'esg', 'lead', 'risk'].map((k, i) => `<span style="flex:${Math.max(d.weights[k], 6)};background:${['#7C5CFF', '#1fa774', '#2f8cff', '#d9822b'][i]}">${k} ${d.weights[k]}%</span>`).join('')}</div>
+      <ol style="margin:8px 0 0;color:var(--muted)">${d.questions.map(x => `<li>${esc(x)}</li>`).join('')}</ol></div>`;
+    h += `<div class="qgrid">${R.c.suppliers.map(sp => { const q = R.quotes[sp.n]; if (!q) return `<div class="q"><b>${esc(sp.n)}</b><div class="mut"><span class="spin"></span>writing…</div></div>`;
+      return `<div class="q"><b>${esc(sp.n)}</b> <span class="mut">· hidden: list ${eur(sp.quote)}, capacity ${sp.cap ? (+sp.cap).toLocaleString() : '?'}/wk</span>${q.decision === 'decline' ? `<b class="p wa">Declined</b>` : `<b class="p">${eur(q.price)}</b><div>lead ${q.lead_days} d · capacity ${(q.capacity_per_week || 0).toLocaleString()}/wk (${q.covers_need_pct}% of need) · valid ${q.validity_days} d</div>`}
+        ${q.esg_commitment ? `<div class="ok">🌱 ${esc(q.esg_commitment)}</div>` : ''}${(q.conditions || []).length ? `<ul>${q.conditions.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}<ol>${(q.answers || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol><i class="mut">“${esc(q.message)}”</i>${q.fallback ? '<div class="wa">rule fallback</div>' : ''}</div>`; }).join('')}</div>`;
+    const rej = R.ev.filter(e => e.type === 'rejected'); if (rej.length) h += `<div class="chk wa">${rej.map(e => `<span>⛔ ${esc(e.msg)}</span>`).join('')}</div>`; }
+  if (bot === 'evaluator') { const v = R.eval;
+    if (v) h += `<div class="doc" style="margin-top:10px"><div class="eyebrow">Evaluator bot · first pick <b style="color:var(--text)">${esc(v.first_pick)}</b> · shortlist ${v.shortlist.map(esc).join(', ')}${v.fallback ? ' · <span class="wa">rule fallback</span>' : ''}</div>
+      <p style="margin:6px 0">${esc(v.summary)}</p><div class="g4"><div style="grid-column:span 2"><b>Mitigation</b><br>${esc(v.mitigation)}</div><div style="grid-column:span 2"><b>Next 30 days</b><br>${esc(v.calendar_note)}</div></div>
+      <table style="margin-top:8px"><tbody>${v.suppliers.map(x => `<tr><td><b>${esc(x.supplier)}</b></td><td class="${x.flag === 'risk' ? 'no' : x.flag === 'watch' ? 'wa' : 'ok'}">${x.flag}</td><td class="mut">${esc(x.comment)}</td></tr>`).join('')}</tbody></table></div>`;
+    const rej = R.ev.filter(e => e.type === 'rejected'); if (rej.length) h += `<div class="chk wa">${rej.map(e => `<span>⛔ ${esc(e.msg)}</span>`).join('')}</div>`; }
+  h += `<textarea class="inp note" placeholder="Your notes: what was good or wrong? (saved with your rating)" data-hnote="${R.c.key}" ${R.done && !S.run.live ? '' : 'disabled'}>${esc(R.human.note)}</textarea>`;
+  return h + `</div></div>`;
+}
+function botHTML(bot) {
+  const run = S.run && S.run.bot === bot ? S.run : null;
+  let h = `<div>${leftHTML(bot)}</div><div>${editorHTML(bot)}`;
+  if (run) { const r = resultOf(run);
+    h += `<div class="card" style="margin-top:12px"><div class="row"><div><div class="eyebrow">Run ${esc(run.id)} · ${esc(run.mode)} · label ${esc(run.label)}</div><h2 style="margin:2px 0 0">${run.live ? '<span class="spin"></span>Running' : 'Results'}: ${r.summary.cases_passed}/${r.cases.length} cases pass all your checks</h2></div>
+      <div class="row" style="margin-left:auto"><div class="grade ${gcls(r.summary.golden_pct)}"><b>${r.summary.golden_pct}%</b><small>your checks</small></div><div class="grade ${r.summary.auto_grade != null ? gcls(r.summary.auto_grade) : ''}"><b>${r.summary.auto_grade ?? '…'}</b><small>auto grade</small></div><div class="grade"><b>${r.summary.human_avg ?? '—'}</b><small>your stars</small></div><div class="grade"><b>₹${(run.cost || 0).toFixed(2)}</b><small>cost</small></div></div></div>
+      ${!run.live ? '<div class="mut" style="font-size:11.5px;margin-top:6px">Rate each case with stars and a note below. Ratings are saved to the scoreboard.</div>' : ''}</div>`;
+    Object.values(run.cases).forEach(R => h += caseResultHTML(bot, R)); }
+  return h + `</div>`;
+}
+function scoreboardHTML() {
+  const rs = S.results, byBot = b => rs.filter(r => r.bot === b);
+  let h = `<div class="card"><div class="eyebrow">Scoreboard</div><h2>Every lab run, newest first</h2><p class="mut" style="margin:0 0 8px">Change one thing (prompt, model, rounds), run the same golden set with a new <b>Label</b>, and compare here. A change is better only if your checks and stars go up without the cost exploding.</p>
+    <table class="sb"><thead><tr><th>When</th><th>Bot</th><th>Golden set</th><th>Label</th><th>Mode</th><th>Cases passed</th><th>Your checks</th><th>Auto grade</th><th>Your stars</th><th>Cost</th><th></th></tr></thead><tbody>
+    ${rs.map(r => `<tr class="click" data-openres="${r.id}"><td>${new Date(r.started * 1000).toLocaleString()}</td><td>${BOTS[r.bot]}</td><td>${esc(r.set_name)}</td><td><b>${esc(r.label)}</b></td><td>${r.mode}</td><td>${r.summary.cases_passed}/${r.cases.length}</td>
+      <td><span class="${r.summary.golden_pct >= 75 ? 'ok' : r.summary.golden_pct >= 50 ? 'wa' : 'no'}">${r.summary.golden_pct}%</span> <span class="mut">(${r.summary.golden_pass}/${r.summary.golden_total})</span></td><td>${r.summary.auto_grade ?? '—'}</td><td>${r.summary.human_avg ?? '—'}</td><td>₹${(+r.cost || 0).toFixed(2)}</td><td><button class="btn sm danger" data-delres="${r.id}">Delete</button></td></tr>
+      ${S.openRes === r.id ? `<tr><td colspan="11"><table><tbody>${r.cases.map(c => `<tr><td><b>${esc(c.key)}</b> ${esc(c.name)}</td><td>${c.golden_pass}/${c.golden_total}</td><td class="mut">${c.golden.map(g => `<span class="${g.pass ? 'ok' : 'no'}">${g.pass ? '✓' : '✕'} ${esc(g.name)}</span>`).join(' · ')}</td><td>${c.human && c.human.stars ? '★'.repeat(c.human.stars) : ''}<div class="mut">${esc(c.human && c.human.note || '')}</div></td><td class="mut">${esc(JSON.stringify(c.out))}</td></tr>`).join('')}</tbody></table></td></tr>` : ''}`).join('') || '<tr><td colspan="11" class="mut">No runs yet. Run a golden set from one of the bot tabs.</td></tr>'}</tbody></table></div>`;
+  // per golden set: case x run matrix
+  const sets = [...new Set(rs.map(r => r.set_id))];
+  sets.forEach(sid => { const runs = rs.filter(r => r.set_id === sid).slice(0, 8).reverse(), keys = [...new Set(runs.flatMap(r => r.cases.map(c => c.key)))];
+    h += `<div class="card" style="margin-top:12px"><div class="eyebrow">Compare runs · ${esc(runs[0].set_name)}</div><table class="mx"><thead><tr><th>Case</th>${runs.map(r => `<th style="text-align:center">${esc(r.label)}<br><span class="mut" style="font-weight:400;text-transform:none;letter-spacing:0">${r.mode} · ${new Date(r.started * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></th>`).join('')}</tr></thead><tbody>
+      ${keys.map(k => `<tr><td><b>${esc(k)}</b> <span class="mut">${esc((runs.flatMap(r => r.cases).find(c => c.key === k) || {}).name || '')}</span></td>${runs.map(r => { const c = r.cases.find(x => x.key === k); if (!c) return '<td class="c mut">—</td>'; const p = pct(c.golden_pass, c.golden_total);
+        return `<td class="c"><span class="${p === 100 ? 'p100' : p >= 50 ? 'pmid' : 'p0'}">${c.golden_pass}/${c.golden_total}${c.human && c.human.stars ? ' · ' + c.human.stars + '★' : ''}</span></td>`; }).join('')}</tr>`).join('')}
+      <tr><td><b>Total</b></td>${runs.map(r => `<td class="c"><b>${r.summary.golden_pct}%</b></td>`).join('')}</tr></tbody></table></div>`; });
+  return h;
+}
+function guideHTML() {
+  return `<div class="card guide"><div class="eyebrow">How to evaluate the bots yourself</div><h2>1. Three kinds of score</h2>
+  <ul><li><b>Your checks (golden expectations)</b>: for each case you write down what a good bot must do (deal or no deal, the maximum price, who must win, who must quote, who must be shortlisted). This is the most important score: it is your definition of "correct".</li>
+  <li><b>Auto grade</b>: the rules the code always checks (no leaks, no stalling, concessions, retries, fallbacks). It tells you if the bot behaved well, not if the business result was right.</li>
+  <li><b>Your stars</b>: read the conversation and rate it 1–5 like you would rate a junior buyer. Write a note on anything odd. This catches things no rule can: tone, bad reasoning, a weak argument.</li></ul>
+  <h2>2. Build a good golden set</h2>
+  <ul><li><b>Normal cases</b> (a deal is possible and there is room to save) – does the bot get a good price?</li>
+  <li><b>Impossible cases</b> (every floor is above the budget) – the only correct answer is <i>no deal</i>. A bot that agrees anyway is dangerous.</li>
+  <li><b>Trap cases</b> (cheapest supplier has no capacity or a supply gap; only one supplier fits the budget) – does the bot avoid the trap?</li>
+  <li><b>Edge cases</b> (one supplier only, a very eager supplier, a new supplier with a trial batch).</li>
+  <li>Set the hidden values yourself (floor, eagerness, capacity) so every run sees exactly the same situation. Leave them blank only if you want randomness.</li>
+  <li>Aim for 5–10 cases per bot. Write the expectation <i>before</i> you run, so the bot cannot influence what you call "good".</li></ul>
+  <h2>3. Compare fairly</h2>
+  <ul><li>Run each set in <b>Mock</b> first (free, rule-based). It is the baseline and shows the case itself is sensible.</li>
+  <li>Then run with <b>Sarvam</b>, label it (e.g. <code>v2</code>). LLMs vary between runs, so run important sets <b>3 times</b> and look at the average, not one lucky run.</li>
+  <li>Change one thing at a time (a prompt line, the model, the rounds), give it a new label (<code>v3</code>), rerun the same set, and compare in <b>Scoreboard → Compare runs</b>. Keep the change only if your checks and stars go up.</li></ul>
+  <h2>4. What "good enough" means</h2>
+  <ul><li>Impossible cases: <b>100%</b> – never over budget, never a deal that breaks a limit.</li>
+  <li>Normal and trap cases: at least <b>80%</b> of your checks over 3 runs.</li>
+  <li>Your stars: average <b>≥ 4</b>, and no 1-star conversation you would be embarrassed to show a supplier.</li>
+  <li>Cost: note it per run. A small quality gain that doubles the cost may not be worth it.</li></ul>
+  <h2>5. When a case fails</h2>
+  <ul><li>Open the conversation (or the chart): did the bot break a rule, misunderstand the goal, or was your expectation too strict?</li>
+  <li>If the bot is wrong: change its prompt (see <code>tools/negotiator/agents.py</code>, <code>rfq.py</code>, <code>evaluator.py</code>) and rerun with a new label.</li>
+  <li>If your expectation was wrong: fix the case, save the set, and note why. Golden sets improve over time too.</li></ul></div>`;
+}
+function render() {
+  nav(); const m = $('#main');
+  if (BOTS[S.tab]) { m.className = ''; m.innerHTML = botHTML(S.tab); }
+  else { m.className = 'full'; m.innerHTML = S.tab === 'scoreboard' ? scoreboardHTML() : guideHTML(); }
+  $('#status').innerHTML = S.health.ok ? `Lab server <b>online</b> · Sarvam key ${S.health.sarvam ? '<b>found</b>' : '<b class="no">missing</b>'} · ${S.health.model || ''}` : 'Lab server <b class="no">offline</b>';
+  persist();
+}
+
+// ---------------- editing ----------------
+function setPath(o, path, v) { const p = path.split('.'); let x = o; while (p.length > 1) { const k = p.shift(); x = x[k] = x[k] || {}; } x[p[0]] = v; }
+const LISTS = ['expect.must_quote', 'expect.may_decline', 'expect.first_pick_in', 'expect.must_shortlist', 'expect.must_not_first'];
+const NUMS = ['vol', 'now', 'budget', 'target', 'contract_end_day', 'weights.price', 'weights.esg', 'weights.lead', 'weights.risk', 'expect.max_price', 'expect.min_saving_pct', 'expect.min_quotes'];
+document.addEventListener('change', e => { const t = e.target, bot = S.tab, c = BOTS[bot] && curCase(bot);
+  if (t.dataset.setsel) { S.setId[t.dataset.setsel] = t.value; S.edit[bot] = null; S.sel[bot] = null; return render(); }
+  if (t.dataset.rounds != null) { S.rounds = Math.max(2, Math.min(8, +t.value || 5)); return persist(); }
+  if (t.dataset.import) { const f = t.files[0]; if (!f) return; f.text().then(async txt => { try { const j = JSON.parse(txt), cases = Array.isArray(j) ? j : j.cases; await api('/api/lab/sets', { bot: t.dataset.import, name: (j.name || f.name.replace('.json', '')) + ' (imported)', cases }); await loadSets(); toast('Set imported', 'var(--green)'); } catch (x) { toast('Not a valid golden set file', 'var(--red)'); } }); return; }
+  if (!c) return;
+  if (t.dataset.f) { let v = t.value; if (LISTS.includes(t.dataset.f)) v = v.split(',').map(x => x.trim()).filter(Boolean); else if (NUMS.includes(t.dataset.f)) v = v === '' ? null : +v; setPath(c, t.dataset.f, v); dirty(); render(); }
+  if (t.dataset.s) { const [i, k] = t.dataset.s.split('|'); let v = t.value; if (['quote', 'floor', 'eager', 'esg', 'lead', 'rel_score', 'cap'].includes(k)) v = v === '' ? null : +v; c.suppliers[+i][k] = v; dirty(); render(); }
+  if (t.dataset.q) { const [i, k] = t.dataset.q.split('|'); let v = t.type === 'checkbox' ? t.checked : t.value; if (['price', 'lead', 'covers', 'esg'].includes(k)) v = +v; if (k === 'conditions') v = v.split(';').map(x => x.trim()).filter(Boolean); c.quotes_in[+i][k] = v; dirty(); render(); }
+  if (t.dataset.hnote) { S.run.cases[t.dataset.hnote].human.note = t.value; saveRatings(); }
+});
+const dirty = () => { const s = curSet(S.tab); if (s) s._dirty = true; };
+document.addEventListener('click', async e => { const t = e.target.closest('[data-tab],[data-mode],[data-case],[data-tick],[data-act],[data-rmsup],[data-rmq],[data-star],[data-openres],[data-delres]'); if (!t || t.disabled) return;
+  const d = t.dataset, bot = S.tab;
+  if (d.tab) { S.tab = d.tab; if (d.tab === 'scoreboard') S.results = await api('/api/lab/results'); return render(); }
+  if (d.mode) { if (d.mode === 'sarvam' && !S.health.sarvam) return toast('No Sarvam key found by the lab server', 'var(--red)'); S.mode = d.mode; return render(); }
+  if (d.tick) { e.stopPropagation(); const ks = selKeys(bot); S.sel[bot] = t.checked ? ks.concat(d.tick) : ks.filter(k => k !== d.tick); return render(); }
+  if (d.case) { if (e.target.tagName === 'INPUT') return; S.edit[bot] = d.case; return render(); }
+  if (d.star) { const [k, n] = [d.star.slice(0, d.star.lastIndexOf('|')), +d.star.slice(d.star.lastIndexOf('|') + 1)]; S.run.cases[k].human.stars = n; render(); return saveRatings(); }
+  if (d.openres) { if (e.target.closest('[data-delres]')) return; S.openRes = S.openRes === d.openres ? null : d.openres; return render(); }
+  if (d.delres) { if (!confirm('Delete this run from the scoreboard?')) return; await api('/api/lab/results/delete', { id: d.delres }); S.results = await api('/api/lab/results'); return render(); }
+  const set = curSet(bot), cs = casesOf(bot), c = curCase(bot);
+  if (d.rmsup != null) { c.suppliers.splice(+d.rmsup, 1); dirty(); return render(); }
+  if (d.rmq != null) { c.quotes_in.splice(+d.rmq, 1); dirty(); return render(); }
+  const a = d.act;
+  if (a === 'run') return runBot(bot);
+  if (a === 'saveset') { await api('/api/lab/sets', { id: set.id, bot, name: set.name, cases: set.data.cases }); set._dirty = false; return toast(`Saved “${esc(set.name)}”`, 'var(--green)'); }
+  if (a === 'copyset') { const name = prompt('Name of the new golden set', set.name + ' (copy)'); if (!name) return; const r = await api('/api/lab/sets', { bot, name, cases: JSON.parse(JSON.stringify(set.data.cases)) }); await loadSets(); S.setId[bot] = r.id; return render(); }
+  if (a === 'export') { const blob = new Blob([JSON.stringify({ name: set.name, bot, cases: set.data.cases }, null, 2)], { type: 'application/json' }), u = URL.createObjectURL(blob), l = document.createElement('a'); l.href = u; l.download = set.name.replace(/[^\w-]+/g, '_') + '.json'; l.click(); setTimeout(() => URL.revokeObjectURL(u), 500); return; }
+  if (a === 'addcase' || a === 'dupcase') { const base = a === 'dupcase' && c ? JSON.parse(JSON.stringify(c)) : JSON.parse(JSON.stringify(cs[0] || {})); let n = cs.length + 1, pre = { negotiation: 'N', rfq: 'R', evaluator: 'E' }[bot]; while (cs.some(x => x.key === pre + n)) n++;
+    base.key = pre + n; base.name = a === 'dupcase' ? base.name + ' (copy)' : 'New case'; if (a === 'addcase') base.expect = {}; cs.push(base); S.edit[bot] = base.key; (S.sel[bot] = selKeys(bot)).push(base.key); dirty(); return render(); }
+  if (a === 'delcase') { if (!c || !confirm(`Delete case ${c.key}?`)) return; cs.splice(cs.indexOf(c), 1); S.edit[bot] = null; dirty(); return render(); }
+  if (a === 'addsup') { c.suppliers.push({ n: 'New supplier', quote: c.now, floor: null, eager: null, cap: null, esg: 75, lead: 14, risk: 'Low', rel_score: null }); dirty(); return render(); }
+  if (a === 'addq') { c.quotes_in.push({ supplier: 'New supplier', price: c.now, lead: 14, covers: 100, esg: 75, risk: 'Low', new: true, incumbent: false, rel: '', conditions: [] }); dirty(); return render(); }
+});
+$('#mode').addEventListener('click', () => {});
+$('#label').addEventListener('change', e => { S.label = e.target.value.trim() || 'lab'; persist(); });
+window.addEventListener('beforeunload', e => { if (S.sets.some(s => s._dirty)) { e.preventDefault(); e.returnValue = ''; } });
+async function loadSets() { S.sets = await api('/api/lab/sets'); }
+(async () => { try { S.health = await api('/api/health'); } catch (e) { S.health = {}; } try { await loadSets(); S.results = await api('/api/lab/results'); } catch (e) {} if (!TABS[S.tab]) S.tab = 'negotiation'; render(); })();
+</script>
+</body>
+</html>

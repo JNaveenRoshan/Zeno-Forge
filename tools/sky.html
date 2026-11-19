@@ -1,0 +1,17 @@
+<!doctype html><html><body>
+<!-- One-off converter: loads assets/raw/sky.exr (Poly Haven, CC0) and produces a small tone-mapped JPEG for environment lighting.
+     Serve the project folder (python -m http.server) and open /tools/sky.html; result is in window.SKY_JPEG. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/EXRLoader.js"></script>
+<script>
+new THREE.EXRLoader().setDataType(THREE.FloatType).load('../assets/raw/sky.exr',tex=>{
+  const {width:w,height:h,data}=tex.image;const W=1024,H=512,cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const g=cv.getContext('2d'),img=g.createImageData(W,H),sx=w/W,sy=h/H,ch=data.length/(w*h);
+  const aces=x=>Math.min(1,Math.max(0,(x*(2.51*x+.03))/(x*(2.43*x+.59)+.14)));
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){let r=0,gg=0,b=0,n=0;
+    for(let j=0;j<sy;j+=2)for(let i=0;i<sx;i+=2){const px=Math.floor(x*sx+i),py=Math.floor(y*sy+j);const k=(py*w+px)*ch;r+=data[k];gg+=data[k+1];b+=data[k+2];n++;}
+    // EXRLoader returns rows bottom-up; flip so the sky is on top
+    const o=((H-1-y)*W+x)*4,e=.9;img.data[o]=255*Math.pow(aces(r/n*e),1/2.2);img.data[o+1]=255*Math.pow(aces(gg/n*e),1/2.2);img.data[o+2]=255*Math.pow(aces(b/n*e),1/2.2);img.data[o+3]=255;}
+  g.putImageData(img,0,0);window.SKY_JPEG=cv.toDataURL('image/jpeg',.88);document.body.appendChild(cv);cv.style.width='100%';
+},undefined,e=>{window.SKY_ERR=String(e);});
+</script></body></html>

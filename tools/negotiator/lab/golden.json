@@ -1,0 +1,94 @@
+[
+  {
+    "id": "neg-golden-v1", "bot": "negotiation", "name": "Negotiation · golden v1",
+    "cases": [
+      { "key": "N1", "name": "Normal deal with room", "note": "Budget = today's price, both suppliers have room below it. A good buyer gets a real saving without paying above target for long.",
+        "model": "Zeno Volt", "part": "Battery pack 82 kWh", "spec": "82 kWh, 400 V, NMC cells", "category": "Battery", "vol": 52000, "plant": "Zeno EV Plant",
+        "now": 8610, "budget": 8610, "target": 8180, "fixed_target": true,
+        "suppliers": [
+          { "n": "Voltacell Energy", "quote": 8610, "floor": 7950, "eager": 0.45, "esg": 75, "lead": 21, "risk": "Medium", "rel": "71 (good)", "rel_score": 71 },
+          { "n": "Hanseo Battery", "quote": 8352, "floor": 7750, "eager": 0.7, "esg": 79, "lead": 18, "risk": "Low", "rel": "new, no history", "rel_score": null } ],
+        "expect": { "deal": "yes", "max_price": 8400, "min_saving_pct": 2.5, "winner": "", "winner_not": "" } },
+      { "key": "N2", "name": "Impossible budget", "note": "Every supplier's floor is above the budget. The buyer must NOT go over budget; the right answer is no deal.",
+        "model": "Zeno Volt", "part": "E-motor + inverter", "spec": "Single motor, RWD, 160 kW", "category": "E-motor", "vol": 52000, "plant": "Zeno EV Plant",
+        "now": 1950, "budget": 1600, "target": 1550, "fixed_target": true,
+        "suppliers": [
+          { "n": "Helix E-Drive", "quote": 1950, "floor": 1780, "eager": 0.5, "esg": 82, "lead": 14, "risk": "Low", "rel": "88 (strong)", "rel_score": 88 },
+          { "n": "Axion Drives", "quote": 1833, "floor": 1700, "eager": 0.7, "esg": 79, "lead": 16, "risk": "Low", "rel": "new, no history", "rel_score": null } ],
+        "expect": { "deal": "no", "max_price": 1600, "min_saving_pct": 0, "winner": "", "winner_not": "" } },
+      { "key": "N3", "name": "Only one supplier can fit", "note": "Only Pressline's floor is under the budget. A good buyer closes with Pressline, never with Doorworks.",
+        "model": "Zeno Aero", "part": "Body-in-white panels", "spec": "HSS body, aluminium closures", "category": "Body", "vol": 28000, "plant": "Zeno EV Plant",
+        "now": 1780, "budget": 1700, "target": 1640, "fixed_target": true,
+        "suppliers": [
+          { "n": "Doorworks Pressings", "quote": 1780, "floor": 1730, "eager": 0.4, "esg": 78, "lead": 6, "risk": "Low", "rel": "83 (strong)", "rel_score": 83 },
+          { "n": "Pressline Iberia", "quote": 1720, "floor": 1610, "eager": 0.6, "esg": 74, "lead": 11, "risk": "Low", "rel": "new, no history", "rel_score": null } ],
+        "expect": { "deal": "yes", "max_price": 1700, "min_saving_pct": 4.5, "winner": "Pressline Iberia", "winner_not": "Doorworks Pressings" } },
+      { "key": "N4", "name": "Single supplier, no competition", "note": "No competitor to play against. The buyer should still get something below the quote.",
+        "model": "Zeno Terra", "part": "Engine 2.0 L", "spec": "1,998 cc, 190 hp, Euro 6e", "category": "Engine", "vol": 41000, "plant": "Zeno Torque Plant",
+        "now": 3150, "budget": 3150, "target": 2990, "fixed_target": true,
+        "suppliers": [
+          { "n": "Kraftmotor Castings", "quote": 3150, "floor": 2900, "eager": 0.4, "esg": 73, "lead": 18, "risk": "Medium", "rel": "80 (good)", "rel_score": 80 } ],
+        "expect": { "deal": "yes", "max_price": 3100, "min_saving_pct": 1.5, "winner": "Kraftmotor Castings", "winner_not": "" } },
+      { "key": "N5", "name": "Very hungry new supplier", "note": "The new supplier wants the deal badly (eagerness 0.9) and has a low floor. A good buyer captures a big saving.",
+        "model": "Zeno Strada", "part": "Wheels & tyres x4", "spec": "16 inch steel, 205/55 R16", "category": "Wheels", "vol": 47000, "plant": "Zeno Torque Plant",
+        "now": 560, "budget": 580, "target": 530, "fixed_target": true,
+        "suppliers": [
+          { "n": "Rimco Tyres", "quote": 560, "floor": 520, "eager": 0.35, "esg": 70, "lead": 9, "risk": "Medium", "rel": "64 (medium)", "rel_score": 64 },
+          { "n": "Rondo Tyres", "quote": 545, "floor": 470, "eager": 0.9, "esg": 65, "lead": 10, "risk": "Medium", "rel": "new, no history", "rel_score": null } ],
+        "expect": { "deal": "yes", "max_price": 535, "min_saving_pct": 4.5, "winner": "", "winner_not": "" } }
+    ]
+  },
+  {
+    "id": "rfq-golden-v1", "bot": "rfq", "name": "RFQ · golden v1",
+    "cases": [
+      { "key": "R1", "name": "Greener goal, one supplier short on capacity", "note": "ESG must get the highest weight. NorthVolta can cover only 37% of the need: it may decline or quote with a ramp-up. The other two must quote.",
+        "model": "Zeno Volt", "part": "Battery pack 82 kWh", "spec": "82 kWh, 400 V, NMC cells", "category": "Battery", "vol": 52000, "plant": "Zeno EV Plant",
+        "now": 8610, "incumbent": "Voltacell Energy", "goal": "esg",
+        "suppliers": [
+          { "n": "Voltacell Energy", "quote": 8610, "cap": 1300, "esg": 75, "lead": 21, "risk": "Medium", "rel": "71 (good)", "rel_score": 71 },
+          { "n": "Hanseo Battery", "quote": 8352, "cap": 1400, "esg": 79, "lead": 18, "risk": "Low", "rel": "new, no history", "rel_score": null },
+          { "n": "NorthVolta Cells", "quote": 8180, "cap": 400, "esg": 88, "lead": 28, "risk": "Low", "rel": "new, no history", "rel_score": null } ],
+        "expect": { "must_quote": ["Voltacell Energy", "Hanseo Battery"], "may_decline": ["NorthVolta Cells"], "min_quotes": 2 } },
+      { "key": "R2", "name": "Cheaper goal, everyone can supply", "note": "Price must get the highest weight. Nobody has a reason to decline.",
+        "model": "Zeno Volt", "part": "Seats & cockpit module", "spec": "5 seats + cockpit module", "category": "Seats", "vol": 52000, "plant": "Zeno EV Plant",
+        "now": 1420, "incumbent": "Seatwise Interiors", "goal": "cost",
+        "suppliers": [
+          { "n": "Seatwise Interiors", "quote": 1420, "cap": 1300, "esg": 80, "lead": 7, "risk": "Low", "rel": "78 (good)", "rel_score": 78 },
+          { "n": "Sitwell Interiors", "quote": 1377, "cap": 1200, "esg": 80, "lead": 9, "risk": "Low", "rel": "new, no history", "rel_score": null } ],
+        "expect": { "must_quote": ["Seatwise Interiors", "Sitwell Interiors"], "may_decline": [], "min_quotes": 2 } },
+      { "key": "R3", "name": "Faster goal, a supplier that cannot deliver", "note": "Lead time must get the highest weight. Kessler can cover only 30%, so declining is correct.",
+        "model": "Zeno Terra", "part": "Engine 2.0 L", "spec": "1,998 cc, 190 hp, Euro 6e", "category": "Engine", "vol": 41000, "plant": "Zeno Torque Plant",
+        "now": 3150, "incumbent": "Kraftmotor Castings", "goal": "lead",
+        "suppliers": [
+          { "n": "Kraftmotor Castings", "quote": 3150, "cap": 900, "esg": 73, "lead": 18, "risk": "Medium", "rel": "80 (good)", "rel_score": 80 },
+          { "n": "Kessler Motorenwerk", "quote": 3024, "cap": 256, "esg": 76, "lead": 20, "risk": "Low", "rel": "new, no history", "rel_score": null } ],
+        "expect": { "must_quote": ["Kraftmotor Castings"], "may_decline": ["Kessler Motorenwerk"], "min_quotes": 1 } }
+    ]
+  },
+  {
+    "id": "eval-golden-v1", "bot": "evaluator", "name": "Evaluator · golden v1",
+    "cases": [
+      { "key": "E1", "name": "Clear winner", "note": "Sitwell is cheaper, as green, full capacity and delivers before the contract ends. It should be the first pick.",
+        "model": "Zeno Volt", "part": "Seats & cockpit module", "vol": 52000, "now": 1420, "incumbent": "Seatwise Interiors", "contract_end_day": 25, "goal_name": "Cheaper",
+        "weights": { "price": 40, "esg": 20, "lead": 20, "risk": 20 },
+        "quotes_in": [
+          { "supplier": "Seatwise Interiors", "price": 1420, "lead": 7, "covers": 100, "esg": 80, "risk": "Low", "new": false, "incumbent": true, "rel": "78 good", "conditions": [] },
+          { "supplier": "Sitwell Interiors", "price": 1330, "lead": 9, "covers": 100, "esg": 81, "risk": "Low", "new": false, "incumbent": false, "rel": "76 good", "conditions": [] } ],
+        "expect": { "first_pick_in": ["Sitwell Interiors"], "must_shortlist": ["Sitwell Interiors"], "must_not_first": [] } },
+      { "key": "E2", "name": "Cheap but production stops", "note": "Kessler is cheapest but covers 40% and starts after the contract ends (big supply gap). It must not be the first pick; the current supplier must be kept on the shortlist.",
+        "model": "Zeno Terra", "part": "Engine 2.0 L", "vol": 41000, "now": 3150, "incumbent": "Kraftmotor Castings", "contract_end_day": 12, "goal_name": "Cheaper",
+        "weights": { "price": 40, "esg": 20, "lead": 20, "risk": 20 },
+        "quotes_in": [
+          { "supplier": "Kraftmotor Castings", "price": 3150, "lead": 18, "covers": 100, "esg": 73, "risk": "Medium", "new": false, "incumbent": true, "rel": "80 good", "conditions": [] },
+          { "supplier": "Kessler Motorenwerk", "price": 2890, "lead": 24, "covers": 40, "esg": 76, "risk": "Low", "new": true, "incumbent": false, "rel": null, "conditions": ["Tooling paid by Zeno"] } ],
+        "expect": { "first_pick_in": ["Kraftmotor Castings"], "must_shortlist": ["Kraftmotor Castings"], "must_not_first": ["Kessler Motorenwerk"] } },
+      { "key": "E3", "name": "Greener goal, new supplier with a trial batch", "note": "Goal is ESG. NorthVolta is greenest and offers a trial batch and warranty, but starts after the contract ends. A good answer shortlists it with the incumbent and proposes extending the contract.",
+        "model": "Zeno Volt", "part": "Battery pack 82 kWh", "vol": 52000, "now": 8610, "incumbent": "Voltacell Energy", "contract_end_day": 20, "goal_name": "Greener",
+        "weights": { "price": 20, "esg": 40, "lead": 20, "risk": 20 },
+        "quotes_in": [
+          { "supplier": "Voltacell Energy", "price": 8610, "lead": 21, "covers": 100, "esg": 75, "risk": "Medium", "new": false, "incumbent": true, "rel": "71 good", "conditions": [] },
+          { "supplier": "NorthVolta Cells", "price": 8420, "lead": 22, "covers": 100, "esg": 88, "risk": "Low", "new": true, "incumbent": false, "rel": null, "conditions": ["Trial batch of 200 packs", "2-year warranty"] } ],
+        "expect": { "first_pick_in": ["NorthVolta Cells", "Voltacell Energy"], "must_shortlist": ["NorthVolta Cells", "Voltacell Energy"], "must_not_first": [] } }
+    ]
+  }
+]

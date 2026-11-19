@@ -1,0 +1,61 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "zeno",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "port": 8765
+    },
+    {
+      "name": "zeno-forge",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "tools/negotiator/server.py",
+        "8771"
+      ],
+      "port": 8771
+    },
+    {
+      "name": "zeno-forge-mock",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "tools/negotiator/server.py",
+        "8772"
+      ],
+      "env": {
+        "SARVAM_MOCK": "1"
+      },
+      "port": 8772
+    },
+    {
+      "name": "bot-lab",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "tools/negotiator/lab_server.py",
+        "8780"
+      ],
+      "port": 8780
+    },
+    {
+      "name": "site-preview",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8790",
+        "--directory",
+        "site",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "port": 8790
+    }
+  ]
+}
