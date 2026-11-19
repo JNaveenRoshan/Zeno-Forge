@@ -6,7 +6,45 @@ Paste the prompt below into an AI coding assistant that can create files and run
 
 ---
 
-## The prompt
+## Short version (copy this prompt)
+
+```text
+Build a single-file interactive web app (HTML, CSS and JS) using Three.js from a CDN: a live 3D car-factory
+campus called "Zeno Forge" that runs Source-to-Pay with AI agents and feels like a strategy game.
+
+WORLD: a low-poly isometric campus built entirely in code, no external models. Two assembly plants (EV and
+petrol) with glass skylights and 10-station lines where cars are visibly built, robot arms, a Supplier Hub with
+loading docks, a freight train siding, a car-carrier ship at a port, a test track, an HQ tower, wind turbines,
+a solar farm and an AI Data Center. Clean toy-like clay look, dark mode first with one violet accent (#7C5CFF).
+
+LIFE: cars move station to station and roll out to the test track. Trucks deliver parts, the train unloads
+crates with forklifts, the ship loads 20 finished cars and sails. People walk, work at consoles, eat at the café.
+Headlights and street lights at night; the Data Center glows with neon edges.
+
+AGENTS: Source-to-Pay in 8 steps: Parts, Suppliers, RFQ, Evaluate, Negotiate, Award, PO to Pay, Performance.
+A buyer agent writes RFQs; one supplier agent per supplier quotes; an evaluator ranks quotes and shows cars at
+risk on a 60-day calendar; buyer and supplier agents negotiate live, each with hidden limits; procurement,
+warehouse and AP agents run the PO, goods receipt, invoice and 3-way match, and the AP agent explains failures.
+Code does all maths and enforces rules: no deal over budget, no invented numbers. I make every decision.
+
+INTERACTION: drag to pan, right-drag to rotate, scroll or pinch to zoom. Click any plant, car, truck, train,
+ship or supplier: the camera glides to it, a ring and label mark it, and a glass panel shows live stats. An
+area switcher flies between EV Plant, Petrol Plant, Supplier Hub, Port and Test Track.
+
+DASHBOARD: frosted glass panels: top bar (logo, search, area switcher, weather menu, live clock, alerts,
+day/night toggle, user), 4 KPI cards (Cars built today, Material spend, Margin per car, Cars sold), a right
+detail panel, a bottom-left Source-to-Pay tracker (Contract, PO, Shipped, Received, Invoice match, Paid) and a
+tabbed table (Purchase orders, Invoices, Suppliers, Cost per car). Realistic data: part names, supplier ESG
+scores, euros per car, lead times in days.
+
+EXTRAS: weather (Clear, Monsoon with wet roads, Fog with floodlights); animated day/night; works on mobile.
+```
+
+For the **real AI agents** (an LLM instead of simulated agents), add one line to the prompt: *"Add a small Python standard-library server that runs the agents with my own LLM API key from a git-ignored .env file, and keep the in-browser simulation as a free fallback."* The long prompt below spells out every rule.
+
+---
+
+## Full version (every rule spelled out)
 
 ```text
 Build "Zeno Forge": a Source-to-Pay demo for a fictional car manufacturer, Zeno Group, with a live 3D campus
