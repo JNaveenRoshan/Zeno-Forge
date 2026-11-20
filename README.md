@@ -66,6 +66,7 @@ Open **http://localhost:8771/zeno-forge.html** → **Zeno Group HQ → Source-to
 |---|---|
 | 🚀 [**Build the whole thing in one prompt**](docs/one-prompt.md) | A single prompt you can give an AI coding assistant to rebuild Zeno Forge from scratch, plus how to steer it |
 | 🛠️ [**Create, build and evaluate your own agents**](docs/custom-agents.md) | The 6-part recipe every agent here follows, a runnable template (should-cost agent), and how to test it |
+| 🏭 [**Five S2P agents that work alongside SAP Ariba + Joule**](docs/s2p-agent-playbooks.md) | How to build a tail-spend negotiator, BOM/spec agent, supply chain risk agent, contract redlining agent and intake agent: facts, schema, rules, golden cases and the human gate for each |
 | 🤖 [The agents, their prompts and rules](docs/ai-negotiation/agents.md) | Every agent's prompt, schema, hard rules and live test results |
 | 🧪 [How to evaluate the bots](docs/ai-negotiation/how-to-evaluate.md) | Golden sets, scorecards, the Bot Lab, and a real bug it caught |
 | 🎬 [Demo script](docs/video-script.md) | What to click and say in a demo |

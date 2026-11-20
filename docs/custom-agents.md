@@ -117,3 +117,5 @@ It has golden sets for the negotiation, RFQ and evaluator agents, editable hidde
 | **Spend sorter** | Raw spend lines | Category, with a confidence score |
 
 Keep the same rule for every one: **the AI writes, code supplies the facts and checks every answer, a human decides.**
+
+Step-by-step builds for five more (tail-spend negotiator, BOM/spec, supply chain risk, contract redlining, intake): [s2p-agent-playbooks.md](s2p-agent-playbooks.md).
